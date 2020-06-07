@@ -4,7 +4,7 @@ namespace SearchingSystem
 {
     class MainClass
     {
-        static string[] sentences = {
+        static string[] exampleSentences = {
             "Hello, how are you",
             "How to make a bot",
             "I made a twitter bot in c#",
@@ -15,12 +15,17 @@ namespace SearchingSystem
         static char[] punctuation = {'!', ',', ':', ';', '?', '.', '[', ']', '(', ')' };
         static string searchCommand = "srch";
 
+        static Sentence[] sentence;
+
         public static void Main(string[] args)
         {
+            sentence = new Sentence[exampleSentences.Length];
+
             Console.WriteLine("EXAMPLE SEARCH SENTENCES \n");
-            for (int i = 0; i < sentences.Length; i++)
+            for (int i = 0; i < exampleSentences.Length; i++)
             {
-                Console.WriteLine(sentences[i]);
+                sentence[i] = new Sentence(exampleSentences[i]);
+                Console.WriteLine(exampleSentences[i]);
             }
             Console.WriteLine("");
             Console.WriteLine("use the command: " + searchCommand + " <STRING> to search");
@@ -45,35 +50,56 @@ namespace SearchingSystem
             if (inputWords.Length >= 2) {
 
                 string fullSentence = "";
-                string[] usedSentences = new string[100];
-                int index = 0;
-
-                bool hasSentence = false;
                 bool notFound = true;
 
                 // ACTUAL SEARCHING
 
                 if (inputWords[0].ToLower() == searchCommand) {
-                    for (int i = 0; i < sentences.Length; i++) {
-                        sentenceWords = sentences[i].Split();
 
-                        for (int iW = 0; iW < inputWords.Length-1; iW++){
+
+                    for (int i = 0; i < sentence.Length; i++) {
+                        if (sentence[i] != null) {
+                            sentence[i].hasBeenListed = false;
+                            sentence[i].accuracy = 0;
+                        }
+                    }
+
+                    for (int i = 0; i < sentence.Length; i++) {
+                        sentenceWords = sentence[i].sentence.Split();
+
+                        for (int inputWord = 0; inputWord < inputWords.Length-1; inputWord++){
                             for (int sW = 0; sW < sentenceWords.Length; sW++) {
 
                                 string sWord = sentenceWords[sW].ToLower(); // gets a sentence word
-                                string iWord = inputWords[iW+1].ToLower(); // gets an input word
+                                string iWord = inputWords[inputWord+1].ToLower(); // gets an input word
 
-                                if (sWord.TrimEnd(punctuation) == iWord) {
-                                    hasSentence = false;
-                                    for (int sen = 0; sen < usedSentences.Length; sen++) {
-                                        if (sentences[i] == usedSentences[sen]) hasSentence = true;
-                                    }
+                                if (sWord.TrimEnd(punctuation) == iWord.TrimEnd(punctuation)) {
+                                    sentence[i].increaseAccuracy((float)1 / sentenceWords.Length);
 
-                                    if (!hasSentence) {
-                                        notFound = false;
-                                        fullSentence += sentences[i] + " \n";
-                                        usedSentences[index] = sentences[i];
-                                        index++;
+                                    notFound = false;
+                                    for (int j = 0; j < sentence.Length; j++) {
+                                        if (sentence[j].accuracy > .5f && inputWords.Length > 2) {
+
+                                            if (!sentence[j].hasBeenListed){
+                                                sentence[j].hasBeenListed = true;
+                                                fullSentence += sentence[j].sentence + " \n";
+                                            }
+                                        }
+                                        else if (inputWords.Length == 2) {
+                                            for (int sen = 0; sen < sentence.Length; sen++)
+                                            {
+                                                string[] newSentenceWords = sentence[sen].sentence.Split();
+                                                foreach (string senWord in newSentenceWords) {
+
+                                                    string SentenceWord = senWord.ToLower().TrimEnd(punctuation);
+                                                    string cInputWord = inputWords[1].ToLower();
+
+                                                    if (SentenceWord == cInputWord) {
+                                                        fullSentence = sentence[sen].sentence;
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -83,7 +109,7 @@ namespace SearchingSystem
                     return fullSentence;
                 }
             }
-            return "search command: <" + searchCommand + "> not used or nothing to search";
+            return "search command: <" + searchCommand + "> not used or there's nothing to search";
         }
     }
 }
