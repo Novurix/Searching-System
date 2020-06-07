@@ -23,7 +23,6 @@ namespace SearchingSystem
 
             Console.WriteLine(" ");
             Console.WriteLine(result);
-            Console.WriteLine(" ");
             getInput();
         }
 
@@ -31,7 +30,10 @@ namespace SearchingSystem
             string[] inputWords = input.Split();
             string[] sentenceWords;
 
-            if (inputWords.Length == 2) { 
+            if (inputWords.Length == 2) {
+
+                string fullSentence = "";
+
                 if (inputWords[0].ToLower() == "search") {
                     for (int i = 0; i < sentences.Length; i++)
                     {
@@ -44,12 +46,13 @@ namespace SearchingSystem
                                 string iWord = inputWords[iW+1].ToLower(); // gets an input word
 
                                 if (sWord.StartsWith(iWord)) {
-                                    return sentenceWords[sW] + " found in sentence: [" + (i+1) + "]";
-
+                                    fullSentence += sentences[i] + " \n";
                                 }
                             }
                         }
                     }
+
+                    return fullSentence;
                 }
             }
             else if (inputWords.Length > 2)
@@ -67,7 +70,7 @@ namespace SearchingSystem
                                 string iWord = inputWords[iW+1].ToLower(); // gets an input word
 
                                 if (sWord.StartsWith(iWord)) {
-                                fullSentence += sentenceWords[sW] + " found in sentence: [" + (i+1) + "] \n";
+                                    fullSentence += sentences[i] + " \n";
                                 }
                             }
                         }
