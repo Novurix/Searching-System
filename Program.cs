@@ -66,7 +66,7 @@ namespace SearchingSystem
                                 if (sWord.TrimEnd(punctuation) == iWord) {
                                     hasSentence = false;
                                     for (int sen = 0; sen < usedSentences.Length; sen++) {
-                                        if (sentences[i] == usedSentences[i]) hasSentence = true;
+                                        if (sentences[i] == usedSentences[sen]) hasSentence = true;
                                     }
 
                                     if (!hasSentence) {
@@ -83,7 +83,7 @@ namespace SearchingSystem
                     return fullSentence;
                 }
             }
-            return "search command: <" + searchCommand + "> not used";
+            return "search command: <" + searchCommand + "> not used or nothing to search";
         }
     }
 }
