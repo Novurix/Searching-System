@@ -12,9 +12,7 @@ namespace SearchingSystem
             "Bye! i will see you tomorrow" };
 
         static string input;
-
         static char[] punctuation = {'!', ',', ':', ';', '?', '.', '[', ']', '(', ')' };
-
         static string searchCommand = "srch";
 
         public static void Main(string[] args)
@@ -35,7 +33,6 @@ namespace SearchingSystem
             string result = ScanInput();
 
             Console.WriteLine(" ");
-            if (result.StartsWith(" ")) result = "result not found";
 
             Console.WriteLine(result);
             getInput();
@@ -52,6 +49,9 @@ namespace SearchingSystem
                 int index = 0;
 
                 bool hasSentence = false;
+                bool notFound = true;
+
+                // ACTUAL SEARCHING
 
                 if (inputWords[0].ToLower() == searchCommand) {
                     for (int i = 0; i < sentences.Length; i++) {
@@ -70,6 +70,7 @@ namespace SearchingSystem
                                     }
 
                                     if (!hasSentence) {
+                                        notFound = false;
                                         fullSentence += sentences[i] + " \n";
                                         usedSentences[index] = sentences[i];
                                         index++;
@@ -78,11 +79,11 @@ namespace SearchingSystem
                             }
                         }
                     }
-                    if (fullSentence.StartsWith(" \n")) fullSentence = "result not found";
+                    if (notFound) return "result not found";
                     return fullSentence;
                 }
             }
-            return "result not found";
+            return "search command: <" + searchCommand + "> not used";
         }
     }
 }
